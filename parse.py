@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 import pandas as pd
 import os
+import sys
 
 def join_leave(text):
     if 'left' in text:
@@ -10,7 +11,11 @@ def join_leave(text):
 
 
 def main():
-    TITLE = 'data_19.xlsx'
+    if not len(sys.argv) == 4:
+        return -1
+    TITLE = sys.argv[1]
+    DATA = sys.argv[2]
+    OUTPUT = sys.argv[3]
 
     names = []
     sites = []
@@ -30,8 +35,8 @@ def main():
                 'Left' : leaves
                 }
 
-    for filename in os.listdir(os.getcwd() + '\\page_sources'):
-        with open(os.getcwd() + '\\page_sources\\' + filename) as file:
+    for filename in os.listdir(os.getcwd() + '\\' + DATA):
+        with open(os.getcwd() + '\\' + DATA + '\\' + filename) as file:
             soup = BeautifulSoup(file, 'html.parser')
 
         for person in soup.find_all('a', 'small'):
@@ -58,7 +63,7 @@ def main():
                 leaves.append(leave)
     
     dataFrame = pd.DataFrame(tableDict)
-    dataFrame.to_excel(os.getcwd() + '\\data\\' + TITLE)
+    dataFrame.to_excel(os.getcwd() + '\\' + OUTPUT + '\\' + TITLE)
 
 if __name__ == "__main__":
     main()
